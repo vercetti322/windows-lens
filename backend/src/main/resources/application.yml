@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: notepad-copilot-backend
+
+server:
+  port: 9009
+
+ollama:
+  base-url: http://localhost:11434
