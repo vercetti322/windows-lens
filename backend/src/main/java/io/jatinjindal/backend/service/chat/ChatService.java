@@ -36,7 +36,7 @@ public class ChatService {
 
         var session = transformToSession(request); store.save(session);
         try {
-            String response = modelProvider.chat(session);
+            String response = modelProvider.chat(session.prompt());
             addChatMessage(MessageRole.ASSISTANT, response, session.getId());
 
             return CreateSessionResponse.builder().id(session.getId())
@@ -87,7 +87,7 @@ public class ChatService {
 
         boolean sessionEnded = session.getMessages().size() >= FOLLOWUP_LIMIT;
         try {
-            String response = modelProvider.chat(session);
+            String response = modelProvider.chat(session.prompt());
             addChatMessage(MessageRole.ASSISTANT, response, session.getId());
 
             return FollowupResponse.builder().response(response)
