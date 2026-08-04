@@ -9,7 +9,8 @@ import java.util.UUID;
 @Data
 @Builder
 public class ChatSession {
-    private UUID sessionId;
+    private UUID id;
     private String selectedText;
+    private String model;
     private List<ChatMessage> messages;
 }
