@@ -17,18 +17,14 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    @PostMapping(value = "/sessions",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping(value = "/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
     public CreateSessionResponse createSession(
             @Valid @RequestBody CreateSessionRequest sessionRequest
     ) {
         return chatService.createSession(sessionRequest);
     }
 
-    @PostMapping(value = "/sessions/messages",
-            produces = MediaType.APPLICATION_JSON_VALUE
-    )
+    @PostMapping(value = "/sessions/messages", produces = MediaType.APPLICATION_JSON_VALUE)
     public FollowupResponse sendFollowup(
             @Valid @RequestBody FollowupRequest followupRequest
     ) {
