@@ -16,11 +16,8 @@ public class ChatSession {
     private List<ChatMessage> messages;
 
     public String prompt() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(SELECTED_TEXT_HEADING);
-
-        sb.append(selectedText);
-        sb.append(CONVERSATION_HEADING);
+        StringBuilder sb = new StringBuilder(); sb.append(SELECTED_TEXT_HEADING);
+        sb.append(selectedText); sb.append(CONVERSATION_HEADING);
 
         messages.forEach(message -> sb.append(message.role())
                 .append(":").append(message.content()).append("\n"));
