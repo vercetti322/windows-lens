@@ -29,4 +29,7 @@ public class BackendConstants {
     public static final String SESSION_MAX_PROMPTS_ERROR = ERROR + "Session has reached the limit for prompts.";
     public static final String SELECTED_TEXT_HEADING = "Selected Text:\n";
     public static final String CONVERSATION_HEADING = "\n\nConversation:\n";
+    public static final String GEMINI_API_KEY = "windows-lens-gemini-api-key";
+    public static final String GEMINI_KEY_NOT_FOUND = ERROR + "Gemini API key not found.";
+    public static final String OLLAMA_BASE_URL = "http://localhost:11434";
 }

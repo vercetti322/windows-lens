@@ -17,7 +17,7 @@ public class ModelProvider {
     public String chat(String prompt, String model) {
         String provider = getProvider(model).orElseThrow(
                 () -> new WindowsLensException("Model not found")
-        );
+        ); return "";
     }
 
     private Optional<String> getProvider(String model) {

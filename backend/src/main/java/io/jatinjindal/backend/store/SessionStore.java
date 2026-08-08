@@ -3,15 +3,15 @@ package io.jatinjindal.backend.store;
 import io.jatinjindal.backend.model.ChatSession;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class SessionStore {
 
-    private final Map<UUID, ChatSession> sessionMap = new ConcurrentHashMap<>();
+    private final Map<UUID, ChatSession> sessionMap = new HashMap<>();
 
     public void save(ChatSession session) {
         sessionMap.put(session.getId(), session);
