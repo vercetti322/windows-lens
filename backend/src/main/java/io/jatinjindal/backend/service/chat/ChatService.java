@@ -36,7 +36,7 @@ public class ChatService {
 
         var session = transformToSession(request); store.save(session);
         try {
-            String response = modelProvider.chat(session.prompt());
+            String response = modelProvider.chat(session.prompt(), session.getModel());
             addChatMessage(MessageRole.ASSISTANT, response, session.getId());
 
             return CreateSessionResponse.builder().id(session.getId())
@@ -53,8 +53,8 @@ public class ChatService {
         if (!Files.exists(modelsPath)) { return false; }
         try {
             return Files.readAllLines(modelsPath).stream()
-                    .map(String::trim).filter(s -> !s.isEmpty())
-                    .anyMatch(model::equals);
+                    .map(String::trim)
+                    .anyMatch(l -> l.startsWith(model + "="));
         } catch (IOException e) { return false; }
     }
 
@@ -87,7 +87,7 @@ public class ChatService {
 
         boolean sessionEnded = session.getMessages().size() >= FOLLOWUP_LIMIT;
         try {
-            String response = modelProvider.chat(session.prompt());
+            String response = modelProvider.chat(session.prompt(), session.getModel());
             addChatMessage(MessageRole.ASSISTANT, response, session.getId());
 
             return FollowupResponse.builder().response(response)
