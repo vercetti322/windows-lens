@@ -4,7 +4,7 @@ import io.jatinjindal.backend.dto.request.CreateSessionRequest;
 import io.jatinjindal.backend.dto.request.FollowupRequest;
 import io.jatinjindal.backend.dto.response.CreateSessionResponse;
 import io.jatinjindal.backend.dto.response.FollowupResponse;
-import io.jatinjindal.backend.service.chat.ChatService;
+import io.jatinjindal.backend.service.ChatService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;

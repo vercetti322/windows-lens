@@ -1,4 +1,4 @@
-package io.jatinjindal.backend.service.chat;
+package io.jatinjindal.backend.service;
 
 import io.jatinjindal.backend.dto.common.MessageRole;
 import io.jatinjindal.backend.dto.request.CreateSessionRequest;
@@ -8,7 +8,6 @@ import io.jatinjindal.backend.dto.response.FollowupResponse;
 import io.jatinjindal.backend.exception.WindowsLensException;
 import io.jatinjindal.backend.model.ChatMessage;
 import io.jatinjindal.backend.model.ChatSession;
-import io.jatinjindal.backend.service.model.ModelProvider;
 import io.jatinjindal.backend.store.SessionStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,9 +40,7 @@ public class ChatService {
 
             return CreateSessionResponse.builder().id(session.getId())
                     .response(response).build();   
-        } catch (Exception e) {
-            throw new WindowsLensException(MODEL_RESPONSE_ERROR, e);
-        }
+        } catch (Exception e) { throw new WindowsLensException(MODEL_RESPONSE_ERROR, e); }
     }
 
     private boolean validateModel(String model) {
@@ -92,9 +89,7 @@ public class ChatService {
 
             return FollowupResponse.builder().response(response)
                     .sessionEnded(sessionEnded).build();
-        } catch (Exception e) {
-            throw new WindowsLensException(MODEL_RESPONSE_ERROR, e);
-        }
+        } catch (Exception e) { throw new WindowsLensException(MODEL_RESPONSE_ERROR, e); }
     }
 
     private void addChatMessage(
