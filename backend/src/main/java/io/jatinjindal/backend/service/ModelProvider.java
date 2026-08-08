@@ -16,8 +16,21 @@ public class ModelProvider {
 
     public String chat(String prompt, String model) {
         String provider = getProvider(model).orElseThrow(
-                () -> new WindowsLensException("Model not found")
-        ); return "";
+                () -> new WindowsLensException(MODEL_NOT_FOUND_ERROR)
+        );
+
+        if (provider.equals(GEMINI)) { return geminiChat(prompt, model); }
+        else if (provider.equals(OLLAMA)) { return ollamaChat(prompt, model); }
+
+        else { throw new WindowsLensException(UNKNOWN_PROVIDER_ERROR); }
+    }
+
+    private String geminiChat(String prompt, String model) {
+        return "Gemini response";
+    }
+
+    private String ollamaChat(String prompt, String model) {
+        return "Ollama response";
     }
 
     private Optional<String> getProvider(String model) {

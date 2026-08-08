@@ -32,4 +32,7 @@ public class BackendConstants {
     public static final String GEMINI_API_KEY = "windows-lens-gemini-api-key";
     public static final String GEMINI_KEY_NOT_FOUND = ERROR + "Gemini API key not found.";
     public static final String OLLAMA_BASE_URL = "http://localhost:11434";
+    public static final String UNKNOWN_PROVIDER_ERROR = ERROR + "Unknown provider.";
+    public static final String GEMINI = "GEMINI";
+    public static final String OLLAMA = "OLLAMA";
 }
