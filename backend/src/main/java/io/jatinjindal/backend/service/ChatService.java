@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -65,7 +66,7 @@ public class ChatService {
 
         return ChatSession.builder().id(UUID.randomUUID())
                 .selectedText(selectedText).model(model)
-                .messages(List.of(chatMessage)).build();
+                .messages(new ArrayList<>(List.of(chatMessage))).build();
     }
 
     public FollowupResponse sendFollowup(FollowupRequest request) {

@@ -1,6 +1,13 @@
 package io.jatinjindal.backend.service;
 
 import io.jatinjindal.backend.exception.WindowsLensException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.chat.prompt.Prompt;
+import org.springframework.ai.google.genai.GoogleGenAiChatModel;
+import org.springframework.ai.google.genai.GoogleGenAiChatOptions;
+import org.springframework.ai.ollama.OllamaChatModel;
+import org.springframework.ai.ollama.api.OllamaChatOptions;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -12,7 +19,11 @@ import java.util.Optional;
 import static io.jatinjindal.backend.constant.BackendConstants.*;
 
 @Service
+@RequiredArgsConstructor
 public class ModelProvider {
+
+    private final GoogleGenAiChatModel geminiProvider;
+    private final OllamaChatModel ollamaProvider;
 
     public String chat(String prompt, String model) {
         String provider = getProvider(model).orElseThrow(
@@ -26,11 +37,29 @@ public class ModelProvider {
     }
 
     private String geminiChat(String prompt, String model) {
-        return "Gemini response";
+        Prompt request = Prompt.builder().content(prompt)
+                .chatOptions(GoogleGenAiChatOptions
+                        .builder().model(model).build()).build();
+
+        ChatResponse response = geminiProvider.call(request);
+        if (response.getResult() == null) {
+            throw new WindowsLensException(GEMINI_RESPONSE_ERROR);
+        }
+
+        return response.getResult().getOutput().getText();
     }
 
     private String ollamaChat(String prompt, String model) {
-        return "Ollama response";
+        Prompt request = Prompt.builder().content(prompt)
+                .chatOptions(OllamaChatOptions
+                        .builder().model(model).build()).build();
+
+        ChatResponse response = ollamaProvider.call(request);
+        if (response.getResult() == null) {
+            throw new WindowsLensException(OLLAMA_RESPONSE_ERROR);
+        }
+
+        return response.getResult().getOutput().getText();
     }
 
     private Optional<String> getProvider(String model) {
