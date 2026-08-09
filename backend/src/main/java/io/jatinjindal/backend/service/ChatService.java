@@ -75,7 +75,7 @@ public class ChatService {
         );
 
         if (session.getMessages().stream().filter(m -> m.role()
-                == MessageRole.USER).count() >= FOLLOWUP_LIMIT
+                == MessageRole.USER).count() > FOLLOWUP_LIMIT
         ) {
             throw new WindowsLensException(SESSION_MAX_PROMPTS_ERROR);
         }
@@ -83,7 +83,8 @@ public class ChatService {
         String userMessage = request.getMessage();
         addChatMessage(MessageRole.USER, userMessage, session.getId());
 
-        boolean sessionEnded = session.getMessages().size() >= FOLLOWUP_LIMIT;
+        boolean sessionEnded = session.getMessages().stream().filter(
+                m -> m.role() == MessageRole.USER).count() > FOLLOWUP_LIMIT;
         try {
             String response = modelProvider.chat(session.prompt(), session.getModel());
             addChatMessage(MessageRole.ASSISTANT, response, session.getId());
