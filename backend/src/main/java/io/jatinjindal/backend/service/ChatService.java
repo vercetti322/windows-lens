@@ -52,7 +52,7 @@ public class ChatService {
         try {
             return Files.readAllLines(modelsPath).stream()
                     .map(String::trim)
-                    .anyMatch(l -> l.startsWith(model + "="));
+                    .anyMatch(l -> l.startsWith(model + "<=>"));
         } catch (IOException e) { return false; }
     }
 
