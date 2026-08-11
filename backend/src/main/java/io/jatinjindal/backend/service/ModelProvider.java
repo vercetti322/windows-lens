@@ -5,6 +5,7 @@ import io.jatinjindal.backend.dto.common.Model;
 import io.jatinjindal.backend.exception.WindowsLensException;
 import io.jatinjindal.backend.store.ModelStore;
 import io.jatinjindal.backend.transmitter.GoogleTransmitter;
+import io.jatinjindal.backend.transmitter.OllamaTransmitter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
@@ -28,7 +29,8 @@ public class ModelProvider {
 
     private final GoogleGenAiChatModel geminiProvider;
     private final OllamaChatModel ollamaProvider;
-    private final GoogleTransmitter transmitter;
+    private final GoogleTransmitter googleTransmitter;
+    private final OllamaTransmitter ollamaTransmitter;
     private final ModelStore modelStore;
 
     public String chat(String prompt, String model, Provider provider) {
@@ -39,14 +41,10 @@ public class ModelProvider {
 
     public List<Model> fetchAvailableModels(boolean gemini, boolean ollama) {
         List<Model> models = new ArrayList<>();
-        if (gemini) { models.addAll(transmitter.getTextModels()); }
+        if (gemini) { models.addAll(googleTransmitter.getModels()); }
 
-        if (ollama) { models.addAll(fetchOllamaModels());}
+        if (ollama) { models.addAll(ollamaTransmitter.getModels()); }
         modelStore.saveAll(models); return models;
-    }
-
-    private List<Model> fetchOllamaModels() {
-        return new ArrayList<>();
     }
 
     private String geminiChat(String prompt, String model) {

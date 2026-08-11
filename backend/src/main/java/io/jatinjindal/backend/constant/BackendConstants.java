@@ -36,8 +36,10 @@ public class BackendConstants {
     public static final String GEMINI_RESPONSE_ERROR = ERROR + "Gemini response is null.";
     public static final String OLLAMA_RESPONSE_ERROR = ERROR + "Ollama response is null.";
     public static final String GEMINI_MODELS_RESPONSE_ERROR = ERROR + "Failed to get list of Gemini models.";
+    public static final String OLLAMA_MODELS_RESPONSE_ERROR = ERROR + "Failed to get list of Ollama models.";
     public static final String GEMINI = "gemini";
     public static final String OLLAMA = "ollama";
+    public static final String TAGS_PATH = "/api/tags";
     public static final String PS = "ps";
     public static final String SERVE = "serve";
     public static final String OLLAMA_START_ERROR = ERROR + "Failed to start Ollama server.";
