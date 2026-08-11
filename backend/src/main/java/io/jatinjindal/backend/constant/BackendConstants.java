@@ -47,4 +47,5 @@ public class BackendConstants {
     public static final String API_KEY_HEADER = "x-goog-api-key";
     public static final String MODELS = "models";
     public static final String NAME = "name";
+    public static final String PROVIDER_NOT_FOUND = ERROR + "Provider not found.";
 }
