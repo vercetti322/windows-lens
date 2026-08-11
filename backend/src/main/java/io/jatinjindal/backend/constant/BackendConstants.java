@@ -1,5 +1,7 @@
 package io.jatinjindal.backend.constant;
 
+import java.net.URI;
+
 public class BackendConstants {
     private BackendConstants() {}
     public static final String ERROR = "[WINDOWS LENS ERROR]: ";
@@ -23,8 +25,6 @@ public class BackendConstants {
         - Use examples only when they materially improve the explanation.
         - Format code, commands, and technical output appropriately.
         """;
-    public static final String USER_HOME = "user.home";
-    public static final String MODEL_LIST_PATH = ".windows-lens/models.txt";
     public static final String SESSION_NOT_FOUND_ERROR = ERROR + "Session not found.";
     public static final int FOLLOWUP_LIMIT = 3;
     public static final String SESSION_MAX_PROMPTS_ERROR = ERROR + "Session has reached the limit for prompts.";
@@ -33,12 +33,18 @@ public class BackendConstants {
     public static final String GEMINI_API_KEY = "windows-lens-gemini-api-key";
     public static final String GEMINI_KEY_NOT_FOUND = ERROR + "Gemini API key not found.";
     public static final String OLLAMA_BASE_URL = "http://localhost:11434";
-    public static final String UNKNOWN_PROVIDER_ERROR = ERROR + "Unknown provider.";
     public static final String GEMINI_RESPONSE_ERROR = ERROR + "Gemini response is null.";
     public static final String OLLAMA_RESPONSE_ERROR = ERROR + "Ollama response is null.";
+    public static final String GEMINI_MODELS_RESPONSE_ERROR = ERROR + "Failed to get list of Gemini models.";
     public static final String GEMINI = "gemini";
     public static final String OLLAMA = "ollama";
     public static final String PS = "ps";
     public static final String SERVE = "serve";
     public static final String OLLAMA_START_ERROR = ERROR + "Failed to start Ollama server.";
+    public static final URI GOOGLE_GEMINI_MODELS_URI = URI.create(
+            "https://generativelanguage.googleapis.com/v1beta/models?pageSize=10"
+    );
+    public static final String API_KEY_HEADER = "x-goog-api-key";
+    public static final String MODELS = "models";
+    public static final String NAME = "name";
 }

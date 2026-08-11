@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class CreateSessionResponse {
+public class SessionResponse {
     private UUID id;
     private String response;
 }

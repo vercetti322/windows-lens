@@ -1,21 +1,19 @@
 package io.jatinjindal.backend.service;
 
 import io.jatinjindal.backend.dto.common.MessageRole;
-import io.jatinjindal.backend.dto.request.CreateSessionRequest;
+import io.jatinjindal.backend.dto.request.SessionRequest;
 import io.jatinjindal.backend.dto.request.FollowupRequest;
-import io.jatinjindal.backend.dto.response.CreateSessionResponse;
+import io.jatinjindal.backend.dto.response.SessionResponse;
 import io.jatinjindal.backend.dto.response.FollowupResponse;
 import io.jatinjindal.backend.exception.WindowsLensException;
 import io.jatinjindal.backend.model.ChatMessage;
 import io.jatinjindal.backend.model.ChatSession;
+import io.jatinjindal.backend.store.ModelStore;
 import io.jatinjindal.backend.store.SessionStore;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,83 +24,81 @@ import static io.jatinjindal.backend.constant.BackendConstants.*;
 @RequiredArgsConstructor
 public class ChatService {
 
-    private final SessionStore store;
+    private final SessionStore sessionStore;
     private final ModelProvider modelProvider;
+    private final ModelStore modelStore;
 
-    public CreateSessionResponse createSession(CreateSessionRequest request) {
-        if (!validateModel(request.getModel())) {
+    public SessionResponse createSession(SessionRequest request) {
+        if (!modelStore.containsModel(request.getModel())) {
             throw new WindowsLensException(MODEL_NOT_FOUND_ERROR);
         }
 
-        var session = transformToSession(request); store.save(session);
+        var session = transformToSession(request); sessionStore.save(session);
         try {
-            String response = modelProvider.chat(session.prompt(), session.getModel());
+            String response = modelProvider.chat(session.prompt(),
+                    session.getModel(), session.getProvider()
+            );
             addChatMessage(MessageRole.ASSISTANT, response, session.getId());
 
-            return CreateSessionResponse.builder().id(session.getId())
-                    .response(response).build();   
-        } catch (Exception e) { throw new WindowsLensException(MODEL_RESPONSE_ERROR, e); }
+            return SessionResponse.builder().id(session.getId())
+                    .response(response).build();
+        } catch (Exception e) {
+            throw new WindowsLensException(MODEL_RESPONSE_ERROR, e);
+        }
     }
 
-    private boolean validateModel(String model) {
-        Path modelsPath = Paths.get(System.getProperty(USER_HOME))
-                .resolve(MODEL_LIST_PATH);
-
-        if (!Files.exists(modelsPath)) { return false; }
-        try {
-            return Files.readAllLines(modelsPath).stream()
-                    .map(String::trim)
-                    .anyMatch(l -> l.startsWith(model + "<=>"));
-        } catch (IOException e) { return false; }
-    }
-
-    private ChatSession transformToSession(CreateSessionRequest request) {
+    private ChatSession transformToSession(SessionRequest request) {
         String model = request.getModel();
         String selectedText = request.getSelectedText();
 
         String userMessage = request.getUserMessage();
         var chatMessage = ChatMessage.builder().role(MessageRole.USER)
-                .content(userMessage).build();
+                .content(userMessage).timestamp(Instant.now()).build();
 
         return ChatSession.builder().id(UUID.randomUUID())
-                .selectedText(selectedText).model(model)
-                .messages(new ArrayList<>(List.of(chatMessage))).build();
+                .provider(request.getProvider()).model(model)
+                .selectedText(selectedText).messages(
+                        new ArrayList<>(List.of(chatMessage))).build();
     }
 
     public FollowupResponse sendFollowup(FollowupRequest request) {
-        ChatSession session = store.find(request.getId()).orElseThrow(
+        var session = sessionStore.find(request.getId()).orElseThrow(
                 () -> new WindowsLensException(SESSION_NOT_FOUND_ERROR)
         );
 
-        if (session.getMessages().stream().filter(m -> m.role()
-                == MessageRole.USER).count() > FOLLOWUP_LIMIT
-        ) {
+        if (!modelStore.containsModel(request.getModel())) {
+            throw new WindowsLensException(MODEL_NOT_FOUND_ERROR);
+        }
+
+        if (session.userMessageCount() > FOLLOWUP_LIMIT) {
             throw new WindowsLensException(SESSION_MAX_PROMPTS_ERROR);
         }
 
-        String userMessage = request.getMessage();
-        addChatMessage(MessageRole.USER, userMessage, session.getId());
+        addChatMessage(MessageRole.USER, request.getMessage(), session.getId());
+        boolean sessionEnded = session.userMessageCount() > FOLLOWUP_LIMIT;
 
-        boolean sessionEnded = session.getMessages().stream().filter(
-                m -> m.role() == MessageRole.USER).count() > FOLLOWUP_LIMIT;
         try {
-            String response = modelProvider.chat(session.prompt(), session.getModel());
-            addChatMessage(MessageRole.ASSISTANT, response, session.getId());
+            String response = modelProvider.chat(session.prompt(),
+                    session.getModel(), session.getProvider()
+            );
 
+            addChatMessage(MessageRole.ASSISTANT, response, session.getId());
             return FollowupResponse.builder().response(response)
                     .sessionEnded(sessionEnded).build();
-        } catch (Exception e) { throw new WindowsLensException(MODEL_RESPONSE_ERROR, e); }
+        } catch (Exception e) {
+            throw new WindowsLensException(MODEL_RESPONSE_ERROR, e);
+        }
     }
 
     private void addChatMessage(
             MessageRole role, String message, UUID sessionId
     ) {
-        ChatSession session = store.find(sessionId).orElseThrow(
+        ChatSession session = sessionStore.find(sessionId).orElseThrow(
                 () -> new WindowsLensException(SESSION_NOT_FOUND_ERROR)
         );
 
         ChatMessage chatMessage = ChatMessage.builder().role(role)
-                .content(message).build();
+                .content(message).timestamp(Instant.now()).build();
 
         session.getMessages().add(chatMessage);
     }

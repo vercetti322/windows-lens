@@ -1,6 +1,10 @@
 package io.jatinjindal.backend.service;
 
+import io.jatinjindal.backend.dto.common.Provider;
+import io.jatinjindal.backend.dto.common.Model;
 import io.jatinjindal.backend.exception.WindowsLensException;
+import io.jatinjindal.backend.store.ModelStore;
+import io.jatinjindal.backend.transmitter.GoogleTransmitter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.messages.SystemMessage;
 import org.springframework.ai.chat.messages.UserMessage;
@@ -13,10 +17,8 @@ import org.springframework.ai.ollama.api.OllamaChatOptions;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.jatinjindal.backend.constant.BackendConstants.*;
 
@@ -26,16 +28,25 @@ public class ModelProvider {
 
     private final GoogleGenAiChatModel geminiProvider;
     private final OllamaChatModel ollamaProvider;
+    private final GoogleTransmitter transmitter;
+    private final ModelStore modelStore;
 
-    public String chat(String prompt, String model) {
-        String provider = getProvider(model).orElseThrow(
-                () -> new WindowsLensException(MODEL_NOT_FOUND_ERROR)
-        );
+    public String chat(String prompt, String model, Provider provider) {
+        if (provider.equals(Provider.GEMINI)) {
+            return geminiChat(prompt, model);
+        } else { return ollamaChat(prompt, model); }
+    }
 
-        if (provider.equals(GEMINI)) { return geminiChat(prompt, model); }
-        else if (provider.equals(OLLAMA)) { return ollamaChat(prompt, model); }
+    public List<Model> fetchAvailableModels(boolean gemini, boolean ollama) {
+        List<Model> models = new ArrayList<>();
+        if (gemini) { models.addAll(transmitter.getTextModels()); }
 
-        else { throw new WindowsLensException(UNKNOWN_PROVIDER_ERROR); }
+        if (ollama) { models.addAll(fetchOllamaModels());}
+        modelStore.saveAll(models); return models;
+    }
+
+    private List<Model> fetchOllamaModels() {
+        return new ArrayList<>();
     }
 
     private String geminiChat(String prompt, String model) {
@@ -67,24 +78,11 @@ public class ModelProvider {
         return response.getResult().getOutput().getText();
     }
 
-    private Optional<String> getProvider(String model) {
-        Path modelsPath = Paths.get(System.getProperty(USER_HOME))
-                .resolve(MODEL_LIST_PATH);
-
-        if (!Files.exists(modelsPath)) { return Optional.empty(); }
-        try {
-            return Files.readAllLines(modelsPath).stream()
-                    .map(String::trim).filter(l -> l.startsWith(model + "<=>"))
-                    .map(l -> l.split("<=>", 2)[1]).findFirst();
-        } catch (IOException e) { return Optional.empty(); }
-    }
-
     private void ensureOllamaRunning() {
         try { Process process = new ProcessBuilder(OLLAMA, PS)
                 .redirectErrorStream(true).start();
 
             if (process.waitFor() == 0) { return; }
-
             new ProcessBuilder(OLLAMA, SERVE)
                     .redirectErrorStream(true).start();
         } catch (InterruptedException | IOException e) {

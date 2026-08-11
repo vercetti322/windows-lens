@@ -1,2 +1,2 @@
 rootProject.name = "windows-lens"
-include("desktop", "backend")
+include("backend")

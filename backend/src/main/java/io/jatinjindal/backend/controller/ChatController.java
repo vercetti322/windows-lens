@@ -1,8 +1,8 @@
 package io.jatinjindal.backend.controller;
 
-import io.jatinjindal.backend.dto.request.CreateSessionRequest;
+import io.jatinjindal.backend.dto.request.SessionRequest;
 import io.jatinjindal.backend.dto.request.FollowupRequest;
-import io.jatinjindal.backend.dto.response.CreateSessionResponse;
+import io.jatinjindal.backend.dto.response.SessionResponse;
 import io.jatinjindal.backend.dto.response.FollowupResponse;
 import io.jatinjindal.backend.service.ChatService;
 import jakarta.validation.Valid;
@@ -18,8 +18,8 @@ public class ChatController {
     private final ChatService chatService;
 
     @PostMapping(value = "/sessions", produces = MediaType.APPLICATION_JSON_VALUE)
-    public CreateSessionResponse createSession(
-            @Valid @RequestBody CreateSessionRequest sessionRequest
+    public SessionResponse createSession(
+            @Valid @RequestBody SessionRequest sessionRequest
     ) {
         return chatService.createSession(sessionRequest);
     }
