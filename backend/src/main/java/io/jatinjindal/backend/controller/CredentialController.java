@@ -19,9 +19,9 @@ public class CredentialController {
     @PostMapping(value = "/key", produces = MediaType.APPLICATION_JSON_VALUE)
     public String upsertApiKey(
             @RequestParam(value = "provider") Provider provider,
-            @RequestParam(value = "key") String key
+            @RequestParam(value = "value") String value
     ) {
-        credentialProvider.put(provider, key);
+        credentialProvider.put(provider, value);
         return "API Key successfully persisted.";
     }
 }
