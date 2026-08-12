@@ -43,7 +43,9 @@ public class ModelProvider {
         List<Model> models = new ArrayList<>();
         if (gemini) { models.addAll(googleTransmitter.getModels()); }
 
+        ensureOllamaRunning();
         if (ollama) { models.addAll(ollamaTransmitter.getModels()); }
+        
         modelStore.saveAll(models); return models;
     }
 
