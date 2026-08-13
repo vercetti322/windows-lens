@@ -15,7 +15,7 @@ function GeminiSetup() {
             https://aistudio.google.com/api-keys
           </a>
           {''}
-          , and paste it here: <input type="password" />
+          , and paste it here: <input type="password" maxLength="60" />
         </p>
       </div>
     </div>

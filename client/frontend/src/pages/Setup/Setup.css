@@ -24,3 +24,13 @@
   margin-top: 1rem;
   gap: 1rem;
 }
+
+.setup .title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.setup .title img {
+  height: 4rem;
+}

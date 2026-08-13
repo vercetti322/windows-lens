@@ -5,7 +5,10 @@ import GeminiSetup from '../../components/GeminiSetup/GeminiSetup';
 function Setup() {
   return (
     <div className="setup">
-      <h1>Windows Lens</h1>
+      <div className="title">
+        <img src="/windows-lens.svg" alt="Windows Lens logo" />
+        <h1>Windows Lens</h1>
+      </div>
       <p>
         Follow below steps to setup any of the Gemini or Ollama Model Providers
         for AI Completions.
