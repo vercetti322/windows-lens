@@ -50,9 +50,8 @@ public class BackendConstants {
     public static final String MODELS = "models";
     public static final String NAME = "name";
     public static final String PROVIDER_NOT_FOUND = ERROR + "Provider not found.";
-    public static final String GEMINI_BEAN = "geminiProvider";
-    public static final String OLLAMA_BEAN = "ollamaProvider";
     public static final String API_KEY_UPSERTED = "API key successfully upserted.";
+    public static final String OLLAMA_PORT_NOT_FOUND =  ERROR + "Ollama Port not found.";
     public static final String OLLAMA_PORT_ERROR = ERROR + "Invalid port for Ollama.";
     public static final String USER_HOME = "user.home";
     public static final String WINDOWS_LENS = ".windows-lens";

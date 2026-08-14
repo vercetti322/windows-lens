@@ -1,5 +1,6 @@
 package io.jatinjindal.backend.service;
 
+import com.google.genai.Client;
 import io.jatinjindal.backend.dto.common.Provider;
 import io.jatinjindal.backend.dto.common.Model;
 import io.jatinjindal.backend.exception.WindowsLensException;
@@ -14,8 +15,8 @@ import org.springframework.ai.chat.prompt.Prompt;
 import org.springframework.ai.google.genai.GoogleGenAiChatModel;
 import org.springframework.ai.google.genai.GoogleGenAiChatOptions;
 import org.springframework.ai.ollama.OllamaChatModel;
+import org.springframework.ai.ollama.api.OllamaApi;
 import org.springframework.ai.ollama.api.OllamaChatOptions;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,16 +28,16 @@ import static io.jatinjindal.backend.constant.BackendConstants.*;
 @RequiredArgsConstructor
 public class ModelProvider {
 
-    private final ObjectProvider<GoogleGenAiChatModel> geminiProvider;
-    private final ObjectProvider<OllamaChatModel> ollamaProvider;
+    private final CredentialsProvider credentialsProvider;
     private final ModelStore modelStore;
     private final GoogleTransmitter googleTransmitter;
     private final OllamaTransmitter ollamaTransmitter;
 
     public String chat(String prompt, String model, Provider provider) {
-        if (provider.equals(Provider.GEMINI)) {
-            return geminiChat(prompt, model);
-        } else { return ollamaChat(prompt, model); }
+        return switch (provider) {
+            case GEMINI -> geminiChat(prompt, model);
+            case OLLAMA -> ollamaChat(prompt, model);
+        };
     }
 
     public List<Model> fetchAvailableModels(boolean gemini, boolean ollama) {
@@ -53,32 +54,40 @@ public class ModelProvider {
     }
 
     private String geminiChat(String prompt, String model) {
-        var geminiModel = geminiProvider.getObject();
-        Prompt request = Prompt.builder().messages(new UserMessage(prompt),
-                        new SystemMessage(SYSTEM_PROMPT)
-                ).chatOptions(GoogleGenAiChatOptions
-                        .builder().model(model).build()).build();
+        String apiKey = credentialsProvider.get(GEMINI_API_KEY)
+                .orElseThrow(() -> new WindowsLensException(GEMINI_KEY_NOT_FOUND));
 
-        ChatResponse response = geminiModel.call(request);
+        var provider = GoogleGenAiChatModel.builder().genAiClient(
+                Client.builder().apiKey(apiKey).build()).build();
+
+        Prompt request = Prompt.builder().messages(
+                new UserMessage(prompt), new SystemMessage(SYSTEM_PROMPT)
+        ).chatOptions(GoogleGenAiChatOptions
+                .builder().model(model).build()).build();
+
+        ChatResponse response = provider.call(request);
+
         if (response.getResult() == null) {
             throw new WindowsLensException(GEMINI_RESPONSE_ERROR);
-        }
-
-        return response.getResult().getOutput().getText();
+        } return response.getResult().getOutput().getText();
     }
 
     private String ollamaChat(String prompt, String model) {
-        var ollamaModel = ollamaProvider.getObject();
-        Prompt request = Prompt.builder().messages(new UserMessage(prompt),
-                        new SystemMessage(SYSTEM_PROMPT)
-                ).chatOptions(OllamaChatOptions
-                        .builder().model(model).build()).build();
+        String port = credentialsProvider.get(OLLAMA_PORT)
+                .orElseThrow(() -> new WindowsLensException(OLLAMA_PORT_NOT_FOUND));
 
-        ChatResponse response = ollamaModel.call(request);
+        var api = OllamaApi.builder().baseUrl(LOCALHOST + port).build();
+        var provider = OllamaChatModel.builder().ollamaApi(api).build();
+
+        Prompt request = Prompt.builder().messages(
+                new UserMessage(prompt), new SystemMessage(SYSTEM_PROMPT)
+        ).chatOptions(OllamaChatOptions
+                .builder().model(model).build()).build();
+
+        ChatResponse response = provider.call(request);
+
         if (response.getResult() == null) {
             throw new WindowsLensException(OLLAMA_RESPONSE_ERROR);
-        }
-
-        return response.getResult().getOutput().getText();
+        } return response.getResult().getOutput().getText();
     }
 }
