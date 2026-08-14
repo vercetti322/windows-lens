@@ -10,6 +10,7 @@ import io.jatinjindal.backend.model.ChatMessage;
 import io.jatinjindal.backend.model.ChatSession;
 import io.jatinjindal.backend.store.ModelStore;
 import io.jatinjindal.backend.store.SessionStore;
+import io.jatinjindal.backend.transmitter.SessionTransmitter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +28,7 @@ public class ChatService {
     private final SessionStore sessionStore;
     private final ModelProvider modelProvider;
     private final ModelStore modelStore;
+    private final SessionTransmitter sessionTransmitter;
 
     public SessionResponse createSession(SessionRequest request) {
         if (!modelStore.containsModel(request.getModel())) {
@@ -55,7 +57,10 @@ public class ChatService {
         var chatMessage = ChatMessage.builder().role(MessageRole.USER)
                 .content(userMessage).timestamp(Instant.now()).build();
 
-        return ChatSession.builder().id(UUID.randomUUID())
+        var sessionId = UUID.randomUUID();
+        sessionTransmitter.persist(sessionId, chatMessage);
+
+        return ChatSession.builder().id(sessionId)
                 .provider(request.getProvider()).model(model)
                 .selectedText(selectedText).messages(
                         new ArrayList<>(List.of(chatMessage))).build();
@@ -101,5 +106,6 @@ public class ChatService {
                 .content(message).timestamp(Instant.now()).build();
 
         session.getMessages().add(chatMessage);
+        sessionTransmitter.persist(session.getId(), chatMessage);
     }
 }
