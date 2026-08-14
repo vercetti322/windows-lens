@@ -60,4 +60,5 @@ public class BackendConstants {
     public static final String OLLAMA_SETTINGS_ERROR = ERROR + "Settings file not found for Ollama.";
     public static final String SESSION_LOGS_FOLDER = "sessions";
     public static final String JSONL = ".jsonl";
+    public static final String FRONTEND_PORT = "19000";
 }
