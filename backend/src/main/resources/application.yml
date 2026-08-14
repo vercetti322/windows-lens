@@ -3,4 +3,4 @@ spring:
     name: windows-lens-backend
 
 server:
-  port: 9009
+  port: 19001
