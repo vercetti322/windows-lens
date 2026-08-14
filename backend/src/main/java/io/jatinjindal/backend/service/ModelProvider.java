@@ -19,7 +19,9 @@ import org.springframework.ai.ollama.api.OllamaApi;
 import org.springframework.ai.ollama.api.OllamaChatOptions;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 
 import static io.jatinjindal.backend.constant.BackendConstants.*;
@@ -54,8 +56,12 @@ public class ModelProvider {
     }
 
     private String geminiChat(String prompt, String model) {
-        String apiKey = credentialsProvider.get(GEMINI_API_KEY)
+        String encodedApiKey = credentialsProvider.get(GEMINI_API_KEY)
                 .orElseThrow(() -> new WindowsLensException(GEMINI_KEY_NOT_FOUND));
+
+        String apiKey = new String(Base64.getDecoder().decode(
+                encodedApiKey), StandardCharsets.UTF_8
+        );
 
         var provider = GoogleGenAiChatModel.builder().genAiClient(
                 Client.builder().apiKey(apiKey).build()).build();
@@ -73,8 +79,9 @@ public class ModelProvider {
     }
 
     private String ollamaChat(String prompt, String model) {
-        String port = credentialsProvider.get(OLLAMA_PORT)
-                .orElseThrow(() -> new WindowsLensException(OLLAMA_PORT_NOT_FOUND));
+        String port = ollamaTransmitter.fetchPort().orElseThrow(
+                () -> new WindowsLensException(OLLAMA_PORT_NOT_FOUND)
+        );
 
         var api = OllamaApi.builder().baseUrl(LOCALHOST + port).build();
         var provider = OllamaChatModel.builder().ollamaApi(api).build();
