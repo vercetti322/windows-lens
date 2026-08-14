@@ -6,9 +6,6 @@ import com.microsoft.credentialstorage.model.StoredCredential;
 import io.jatinjindal.backend.dto.common.Provider;
 import io.jatinjindal.backend.exception.WindowsLensException;
 import org.springframework.stereotype.Service;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 import java.util.Optional;
 
 import static io.jatinjindal.backend.constant.BackendConstants.*;
@@ -38,10 +35,6 @@ public class CredentialsProvider {
                     PROVIDER_NOT_FOUND
             );
         };
-
-        value = new String(Base64.getDecoder().decode(value),
-                StandardCharsets.UTF_8
-        );
 
         storage.add(key, new StoredCredential(
                 key, value.toCharArray())

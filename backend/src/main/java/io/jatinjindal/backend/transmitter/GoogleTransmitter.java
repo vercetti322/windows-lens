@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
@@ -30,6 +32,12 @@ public class GoogleTransmitter {
     public List<Model> getModels() {
         String apiKey = provider.get(GEMINI_API_KEY).orElseThrow(
                 () -> new WindowsLensException(GEMINI_KEY_NOT_FOUND)
+        ); return getModels(apiKey);
+    }
+
+    public List<Model> getModels(String encodedApiKey) {
+        String apiKey = new String(Base64.getDecoder().decode(
+                encodedApiKey), StandardCharsets.UTF_8
         );
 
         HttpRequest request = HttpRequest.newBuilder()

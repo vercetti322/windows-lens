@@ -32,7 +32,7 @@ public class BackendConstants {
     public static final String CONVERSATION_HEADING = "\n\nConversation:\n";
     public static final String GEMINI_API_KEY = "windows-lens-gemini-api-key";
     public static final String GEMINI_KEY_NOT_FOUND = ERROR + "Gemini API key not found.";
-    public static final String OLLAMA_BASE_URL = "http://localhost:11434";
+    public static final String LOCALHOST = "http://localhost:";
     public static final String GEMINI_RESPONSE_ERROR = ERROR + "Gemini response is null.";
     public static final String OLLAMA_RESPONSE_ERROR = ERROR + "Ollama response is null.";
     public static final String GEMINI_MODELS_RESPONSE_ERROR = ERROR + "Failed to get list of Gemini models.";
@@ -50,4 +50,13 @@ public class BackendConstants {
     public static final String MODELS = "models";
     public static final String NAME = "name";
     public static final String PROVIDER_NOT_FOUND = ERROR + "Provider not found.";
+    public static final String GEMINI_BEAN = "geminiProvider";
+    public static final String OLLAMA_BEAN = "ollamaProvider";
+    public static final String API_KEY_UPSERTED = "API key successfully upserted.";
+    public static final String OLLAMA_PORT_ERROR = ERROR + "Invalid port for Ollama.";
+    public static final String USER_HOME = "user.home";
+    public static final String WINDOWS_LENS = ".windows-lens";
+    public static final String OLLAMA_SETTINGS_FILE = "ollama-settings.txt";
+    public static final String OLLAMA_PORT = "OLLAMA_PORT";
+    public static final String OLLAMA_SETTINGS_ERROR = ERROR + "Settings file not found for Ollama.";
 }
