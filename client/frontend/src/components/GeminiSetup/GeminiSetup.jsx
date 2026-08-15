@@ -1,6 +1,6 @@
 import './GeminiSetup.css';
 
-function GeminiSetup() {
+function GeminiSetup({ apiKey, onApiKeyChange }) {
   return (
     <div className="gemini-setup">
       <img src="/gemini.svg" alt="Gemini" className="gemini-logo" />
@@ -14,8 +14,13 @@ function GeminiSetup() {
           >
             https://aistudio.google.com/api-keys
           </a>
-          {''}
-          , and paste it here: <input type="password" maxLength="60" />
+          {''}, and paste it here:{' '}
+          <input
+            type="password"
+            value={apiKey}
+            onChange={(e) => onApiKeyChange(e.target.value)}
+            maxLength="60"
+          />
         </p>
       </div>
     </div>

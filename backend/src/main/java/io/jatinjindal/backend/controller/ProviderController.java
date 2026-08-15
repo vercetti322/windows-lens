@@ -17,7 +17,7 @@ public class ProviderController {
 
     private final ProviderService service;
 
-    @PostMapping(value = "/check", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/register", produces = MediaType.APPLICATION_JSON_VALUE)
     public String validate(@Valid @RequestBody ProviderRequest request) {
         return service.validate(request);
     }

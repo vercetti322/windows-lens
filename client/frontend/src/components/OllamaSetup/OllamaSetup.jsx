@@ -1,6 +1,6 @@
 import './OllamaSetup.css';
 
-function OllamaSetup() {
+function OllamaSetup({ port, onPortChange }) {
   return (
     <div className="ollama-setup">
       <img src="/ollama.svg" alt="Ollama" className="ollama-logo" />
@@ -15,7 +15,12 @@ function OllamaSetup() {
             https://ollama.com/download/windows
           </a>
           {''}, and mention the port where it runs:{' '}
-          <input type="text" maxLength="5" />
+          <input
+            type="text"
+            value={port}
+            onChange={(e) => onPortChange(e.target.value)}
+            maxLength="5"
+          />
         </p>
       </div>
     </div>
