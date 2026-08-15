@@ -51,3 +51,11 @@ export const canContinue = async (ollamaPort, geminiApiKey, setPortStatus, setAp
 
     return geminiValid && ollamaValid;
 }
+
+export const cancelWindow = () => {
+    window.cefQuery({
+        request: "quit",
+        onSuccess: () => { },
+        onFailure: (code, msg) => console.error(code, msg)
+    });
+}

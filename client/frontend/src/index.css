@@ -2,7 +2,7 @@
 
 :root {
   --text: #fff;
-  --bg: #222;
+  --bg: rgb(34, 34, 34);
   --font: 'Oxanium', sans-serif;
   --font-size: 16px;
 }

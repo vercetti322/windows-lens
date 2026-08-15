@@ -17,6 +17,7 @@ function GeminiSetup({ apiKey, onApiKeyChange }) {
           {''}, and paste it here:{' '}
           <input
             type="password"
+            autoComplete="new-password"
             value={apiKey}
             onChange={(e) => onApiKeyChange(e.target.value)}
             maxLength="60"

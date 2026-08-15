@@ -7,6 +7,7 @@
   height: 100vh;
 }
 
+
 .setup h1 {
   font-size: 3rem;
 }
@@ -64,9 +65,8 @@
 
 .setup .error-toast {
   position: fixed;
-  top: 1.15rem;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 0.75rem;
+  right: 0.75rem;
   padding: 0.5rem 0.75rem;
   background: #dc2626;
   color: #fff;

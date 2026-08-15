@@ -3,7 +3,7 @@ import OllamaSetup from '../../components/OllamaSetup/OllamaSetup';
 import GeminiSetup from '../../components/GeminiSetup/GeminiSetup';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { canClickContinue, canContinue } from './SetupUtils';
+import { canClickContinue, canContinue, cancelWindow } from './SetupUtils';
 
 function Setup() {
   const [ollamaPort, setOllamaPort] = useState('');
@@ -46,7 +46,7 @@ function Setup() {
         />
       </div>
       <div className="buttons">
-        <button className="cancel" type="button">
+        <button onClick={cancelWindow} className="cancel" type="button">
           Cancel
         </button>
         <button
